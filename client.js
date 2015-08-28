@@ -44,6 +44,10 @@ function getContent(timestamp, pointer) {
                             icon = 'glyphicon-info-sign';
                         } else if (el.label.indexOf('clear') > -1) {
                             icon = 'glyphicon-refresh';
+                        } else if (el.label.indexOf('features') > -1) {
+                            icon = 'glyphicon glyphicon-ok';
+                        } else if (el.label.indexOf('init') > -1) {
+                            icon = 'glyphicon glyphicon-flash';
                         }
                         break;
                 }
@@ -61,7 +65,7 @@ function getContent(timestamp, pointer) {
             });
 
             if (entries.length > 0) {
-                $('#entries li.active').css('background-color','#272822').removeClass('active');
+                $('#entries li.active').stop().css('background-color','#272822').removeClass('active');
 
                 editor.setValue(JSON.stringify(entries[entries.length-1].data, null, '\t'), -1);
                 $('#'+(entries.length-1)).parent().addClass('active').stop().animate({

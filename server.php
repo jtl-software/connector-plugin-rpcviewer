@@ -3,7 +3,7 @@ class Viewer
 {
     public static function run()
     {
-        //set_time_limit(0);
+        set_time_limit(0);
 
         $handle = @fopen("../logs/rpc.log", "r");
 
@@ -23,7 +23,7 @@ class Viewer
 
                 $data = array();
 
-                while (($buffer = fgets($handle, 4096)) !== false) {
+                while (($buffer = fgets($handle)) !== false) {
                     $timestampRegEx = '/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/';
                     $requestRegEx = '/rpc\.DEBUG: RequestPacket: {"method":"(.*)","params":(.*),"jtlrpc"/';
                     $resultRegEx = '/rpc.DEBUG: {"result":(.*),"error":(.*),"jtlrpc"/';
