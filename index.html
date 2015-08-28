@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/mode-json.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/theme-monokai.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="client.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="style.css">
+
+        <title>JTL Connector RPC Viewer</title>
+    </head>
+    <body>
+        <div id="actions">
+            <a id="startBtn" href="#" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Start monitoring</a>
+            <a id="resetBtn" href="#" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Clear RPC log</a>
+            <h3 id="title" class="pull-right"><span class="glyphicon glyphicon-list"></span> JTL Connector RPC Viewer</h3>
+        </div>
+        <ul id="entries"></ul>
+        <div id="view"></div>
+    </body>
+</html>
