@@ -25,7 +25,7 @@ class Viewer
 
                 while (($buffer = fgets($handle)) !== false) {
                     $timestampRegEx = '/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/';
-                    $requestRegEx = '/rpc\.DEBUG: RequestPacket: {"method":"(.*)","params":(.*),"jtlrpc"/';
+                    $requestRegEx = '/rpc.DEBUG: RequestPacket: {"method":"(.*)","params":(.*),"jtlrpc"/';
                     $resultRegEx = '/rpc.DEBUG: {"result":(.*),"error":(.*),"jtlrpc"/';
 
                     preg_match($timestampRegEx, $buffer, $timestamp);
@@ -33,7 +33,7 @@ class Viewer
                     if (preg_match($requestRegEx, $buffer, $request) !== 0) {
                         $data[] = array(
                             'type' => 'request',
-                            'label' => $request[1],
+                            'label' => '<b>'.$request[1].'</b>',
                             'timestamp' => $timestamp[4] . ':' . $timestamp[5] . ':' . $timestamp[6],
                             'data' => json_decode(stripslashes(trim($request[2], '"')))
                         );

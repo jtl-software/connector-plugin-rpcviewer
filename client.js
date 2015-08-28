@@ -20,11 +20,14 @@ function getContent(timestamp, pointer) {
             $.each(data.data, function(index, el) {
                 var color = '';
                 var icon = '';
+                var cls = '';
+                var results = '';
 
                 switch(el.label) {
                     case 'Result':
                         color = 'label-success';
                         icon = 'glyphicon-open';
+                        results = el.data.length === undefined ? '' : ' <span class="badge">'+el.data.length+'</span>';
                         break;
                     case 'Error':
                         color = 'label-danger';
@@ -32,6 +35,7 @@ function getContent(timestamp, pointer) {
                         break;
                     default:
                         color = 'label-primary';
+                        cls = 'request';
 
                         if (el.label.indexOf('pull') > -1) {
                             icon = 'glyphicon-arrow-left';
@@ -56,7 +60,7 @@ function getContent(timestamp, pointer) {
                 }
 
                 var iconStr = '<span class="label '+color+'"><i class="glyphicon '+icon+'"></i></span>&nbsp;&nbsp;';
-                var entry = $('<li><a href="#" id="'+(entries.length)+'">'+iconStr+el.label+'<span class="label label-default pull-right">'+el.timestamp+'</span></a></li>');
+                var entry = $('<li class="'+cls+'"><a href="#" id="'+(entries.length)+'">'+iconStr+el.label+results+'<span class="label label-default pull-right">'+el.timestamp+'</span></a></li>');
 
                 entries.push(el);
 
