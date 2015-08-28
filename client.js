@@ -64,7 +64,7 @@ function getContent(timestamp, pointer) {
 
                 entry.animate({
                     'background-color': '#272822'
-                }, 5000);
+                }, 3000);
             });
 
             if (timer) {
