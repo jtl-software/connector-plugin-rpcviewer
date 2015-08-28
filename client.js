@@ -64,23 +64,27 @@ function getContent(timestamp, pointer) {
                 }
 
                 var iconStr = '<span class="label '+color+'"><i class="glyphicon '+icon+'"></i></span>&nbsp;&nbsp;';
-                var entry = $('<li class="'+cls+'"><a href="#" id="'+(entries.length)+'">'+iconStr+el.label+results+'<span class="label label-default pull-right">'+el.timestamp+'</span></a></li>');
+                var entry = $('<li class="'+cls+'"><a href="#">'+iconStr+el.label+results+'<span class="label label-default pull-right">'+el.timestamp+'</span></a></li>').hide();
 
-                entries.push(el);
+                entries.unshift(el);
 
                 $('#entries').prepend(entry);
 
-                entry.animate({
+                entry.slideDown().animate({
                     'background-color': '#272822'
                 }, 3000);
             });
+
+            entries = entries.slice(0,100);
+
+            $('#entries').find("li").slice(100).remove();
 
             if (timer) {
                 clearTimeout(timer);
                 timer = null;
             }
 
-            timer = setTimeout(ready, 2000);
+            timer = setTimeout(ready, 2500);
 
             getContent(data.timestamp, data.pointer);
         }
@@ -89,7 +93,7 @@ function getContent(timestamp, pointer) {
 
 function ready() {
     if (entries.length > 0) {
-        $('#'+(entries.length-1)).click();
+        $('#entries li:first-child a').click();
     }
 }
 
@@ -99,11 +103,12 @@ $(function() {
     editor.setTheme("ace/theme/monokai");
     editor.setReadOnly(true);
     editor.setShowPrintMargin(false);
+    editor.$blockScrolling = Infinity;
 
     $('#entries').on('click', 'a', function(e) {
         $('#entries li.active').stop().css('background-color','#272822').removeClass('active');
 
-        editor.setValue(JSON.stringify(entries[$(this).attr('id')].data, null, '\t'), -1);
+        editor.setValue(JSON.stringify(entries[$(this).parent().index()].data, null, '\t'), -1);
 
         $(this).parent().stop().animate({
            'background-color': '#111111'
