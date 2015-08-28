@@ -27,7 +27,9 @@ function getContent(timestamp, pointer) {
                     case 'Result':
                         color = 'label-success';
                         icon = 'glyphicon-open';
-                        results = el.data.length === undefined ? '' : ' <span class="badge">'+el.data.length+'</span>';
+                        if(el.data) {
+                            results = el.data.length === undefined ? '' : ' <span class="badge">' + el.data.length + '</span>';
+                        }
                         break;
                     case 'Error':
                         color = 'label-danger';
@@ -52,9 +54,11 @@ function getContent(timestamp, pointer) {
                         } else if (el.label.indexOf('clear') > -1) {
                             icon = 'glyphicon-refresh';
                         } else if (el.label.indexOf('features') > -1) {
-                            icon = 'glyphicon glyphicon-ok';
+                            icon = 'glyphicon glyphicon-cog';
                         } else if (el.label.indexOf('init') > -1) {
                             icon = 'glyphicon glyphicon-flash';
+                        } else if (el.label.indexOf('ack') > -1) {
+                            icon = 'glyphicon glyphicon-ok';
                         }
                         break;
                 }

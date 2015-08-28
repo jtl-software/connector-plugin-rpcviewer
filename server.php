@@ -50,7 +50,7 @@ class Viewer
                                 'type' => 'result',
                                 'label' => 'Result',
                                 'timestamp' => $timestamp[4] . ':' . $timestamp[5] . ':' . $timestamp[6],
-                                'data' => json_decode(stripslashes($result[1]))
+                                'data' => json_decode($result[1])
                             );
                         }
                     }
