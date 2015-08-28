@@ -5,7 +5,7 @@ class Viewer
     {
         //set_time_limit(0);
 
-        $handle = @fopen("../rpc.log", "r");
+        $handle = @fopen("../logs/rpc.log", "r");
 
         if (!isset($_GET['pointer']) || $_GET['pointer'] == 0) {
             $_GET['pointer'] = 0;
@@ -16,7 +16,7 @@ class Viewer
 
             clearstatcache();
 
-            $last_change_in_data_file = filemtime("../rpc.log");
+            $last_change_in_data_file = filemtime("../logs/rpc.log");
 
             if ($last_ajax_call == null || $last_change_in_data_file > $last_ajax_call) {
                 fseek($handle, $_GET['pointer']);
@@ -76,7 +76,7 @@ class Viewer
 
     public static function reset()
     {
-        unlink("../rpc.log");
+        unlink("../logs/rpc.log");
     }
 }
 
