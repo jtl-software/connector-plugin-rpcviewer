@@ -1,6 +1,7 @@
 var entries = [];
 var editor;
 var ajax;
+var timer = null;
 
 function getContent(timestamp, pointer) {
     var queryString = {
@@ -14,6 +15,8 @@ function getContent(timestamp, pointer) {
         url: 'server.php',
         data: queryString,
         success: function(data){
+            $('#entries li.active').stop().css('background-color','#272822').removeClass('active');
+
             $.each(data.data, function(index, el) {
                 var color = '';
                 var icon = '';
@@ -64,18 +67,22 @@ function getContent(timestamp, pointer) {
                 }, 5000);
             });
 
-            if (entries.length > 0) {
-                $('#entries li.active').stop().css('background-color','#272822').removeClass('active');
-
-                editor.setValue(JSON.stringify(entries[entries.length-1].data, null, '\t'), -1);
-                $('#'+(entries.length-1)).parent().addClass('active').stop().animate({
-                    'background-color': '#111111'
-                }, 6000);
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
             }
+
+            timer = setTimeout(ready, 2000);
 
             getContent(data.timestamp, data.pointer);
         }
     });
+}
+
+function ready() {
+    if (entries.length > 0) {
+        $('#'+(entries.length-1)).click();
+    }
 }
 
 $(function() {
@@ -86,9 +93,10 @@ $(function() {
     editor.setShowPrintMargin(false);
 
     $('#entries').on('click', 'a', function(e) {
-        $('#entries li.active').removeClass('active');
-        $('#entries li').stop().css('background-color','#272822');
+        $('#entries li.active').stop().css('background-color','#272822').removeClass('active');
+
         editor.setValue(JSON.stringify(entries[$(this).attr('id')].data, null, '\t'), -1);
+
         $(this).parent().stop().animate({
            'background-color': '#111111'
         }, 500).addClass('active');
