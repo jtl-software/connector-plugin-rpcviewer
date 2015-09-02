@@ -85,9 +85,9 @@ html, body {
 }
 
 #active {
-    width: 280px;
+    width: 200px;
     position: absolute;
     top: 15px;
-    left: 180px;
+    left: 260px;
     display: none;
 }

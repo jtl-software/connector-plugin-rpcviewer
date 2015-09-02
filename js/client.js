@@ -146,37 +146,46 @@ $(function() {
             ajax.abort();
         }
 
-        $('#entries').empty();
-        entries = [];
+        //$('#entries').empty();
+        //entries = [];
 
         getContent(0, 0);
 
-        $('#startBtn').attr('disabled', 'disabled');
-        $('#resetBtn').attr('disabled', null);
+        $('#startBtn,#clearBtn').attr('disabled', 'disabled');
+        $('#stopBtn').attr('disabled', null);
         $('#active').fadeIn();
     });
 
-    $('#resetBtn').click(function() {
-        editor.setValue('');
+    $('#stopBtn').click(function() {
+        if(ajax) {
+            ajax.abort();
+        }
 
         ajax = $.ajax({
             type: 'GET',
             url: 'api.php',
-            data: {'action': 'reset'},
+            data: {'action': 'clear'},
             success: function(data) {
-                if(ajax) {
-                    ajax.abort();
-                }
-
-                $('#entries').empty();
-                entries = [];
-
-                $('#resetBtn').attr('disabled', 'disabled');
-                $('#startBtn').attr('disabled', null);
+                $('#stopBtn').attr('disabled', 'disabled');
+                $('#startBtn,#clearBtn').attr('disabled', null);
                 $('#active').fadeOut();
             }
         });
     });
 
-    $('#resetBtn').click();
+    $('#clearBtn').click(function() {
+        editor.setValue('');
+
+        ajax = $.ajax({
+            type: 'GET',
+            url: 'api.php',
+            data: {'action': 'clear'},
+            success: function(data) {
+                $('#entries').empty();
+                entries = [];
+            }
+        });
+    });
+
+    $('#stopBtn').click();
 });

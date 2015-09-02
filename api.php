@@ -52,7 +52,7 @@ class Api
         }
     }
 
-    public static function reset()
+    public static function clear()
     {
         unlink(static::$file);
     }
@@ -62,7 +62,7 @@ switch($_GET['action']) {
     case 'run':
         Api::run();
         break;
-    case 'reset':
-        Api::reset();
+    case 'clear':
+        Api::clear();
         break;
 }
