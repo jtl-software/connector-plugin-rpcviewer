@@ -83,3 +83,11 @@ html, body {
     background-color: #5cb85c;
     margin-right: 10px;
 }
+
+#active {
+    width: 280px;
+    position: absolute;
+    top: 15px;
+    left: 180px;
+    display: none;
+}

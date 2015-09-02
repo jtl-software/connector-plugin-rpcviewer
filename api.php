@@ -3,21 +3,22 @@ namespace rpcview;
 
 class Api
 {
+    private static $file = "../../logs/rpc.json";
+
     public static function run()
     {
-        //error_reporting(E_ALL);
-        //ini_set('display_errors', true);
-
         set_time_limit(0);
 
-        $handle = @fopen("../../logs/rpc.json", "r");
+        touch(static::$file);
 
-        while (true) {
+        $handle = @fopen(static::$file, "r");
+
+        while (file_exists(static::$file)) {
             $last_ajax_call = isset($_GET['timestamp']) ? (int)$_GET['timestamp'] : null;
 
             clearstatcache();
 
-            $last_change_in_data_file = filemtime("../../logs/rpc.json");
+            $last_change_in_data_file = filemtime(static::$file);
 
             if ($last_ajax_call == null || $last_change_in_data_file > $last_ajax_call) {
                 if (!isset($_GET['pointer']) || $_GET['pointer'] == 0) {
@@ -47,12 +48,13 @@ class Api
                 sleep(1);
                 continue;
             }
+
         }
     }
 
     public static function reset()
     {
-        unlink("../../logs/rpc.json");
+        unlink(static::$file);
     }
 }
 

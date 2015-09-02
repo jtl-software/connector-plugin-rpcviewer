@@ -150,6 +150,10 @@ $(function() {
         entries = [];
 
         getContent(0, 0);
+
+        $('#startBtn').attr('disabled', 'disabled');
+        $('#resetBtn').attr('disabled', null);
+        $('#active').fadeIn();
     });
 
     $('#resetBtn').click(function() {
@@ -160,8 +164,19 @@ $(function() {
             url: 'api.php',
             data: {'action': 'reset'},
             success: function(data) {
-                $('#startBtn').click();
+                if(ajax) {
+                    ajax.abort();
+                }
+
+                $('#entries').empty();
+                entries = [];
+
+                $('#resetBtn').attr('disabled', 'disabled');
+                $('#startBtn').attr('disabled', null);
+                $('#active').fadeOut();
             }
         });
     });
+
+    $('#resetBtn').click();
 });
