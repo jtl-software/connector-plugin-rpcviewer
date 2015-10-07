@@ -3,22 +3,23 @@ namespace rpcview;
 
 class Api
 {
-    private static $file = "../../logs/rpc.json";
+    private static $current = "../../logs/rpcview_current.json";
+    private static $latest = "../../logs/rpcview_latest.json";
 
     public static function run()
     {
         set_time_limit(0);
 
-        touch(static::$file);
+        touch(static::$current);
 
-        $handle = @fopen(static::$file, "r");
+        $handle = @fopen(static::$current, "r");
 
-        while (file_exists(static::$file)) {
+        while (file_exists(static::$current)) {
             $last_ajax_call = isset($_GET['timestamp']) ? (int)$_GET['timestamp'] : null;
 
             clearstatcache();
 
-            $last_change_in_data_file = filemtime(static::$file);
+            $last_change_in_data_file = filemtime(static::$current);
 
             if ($last_ajax_call == null || $last_change_in_data_file > $last_ajax_call) {
                 if (!isset($_GET['pointer']) || $_GET['pointer'] == 0) {
@@ -54,7 +55,30 @@ class Api
 
     public static function clear()
     {
-        unlink(static::$file);
+        if (file_exists(static::$current)) {
+            unlink(static::$latest);
+            copy(static::$current, static::$latest);
+        }
+
+        unlink(static::$current);
+    }
+
+    public static function getLatest()
+    {
+        if (file_exists(static::$latest)) {
+            $handle = @fopen(static::$latest, "r");
+
+            $data = array();
+
+            while (($buffer = fgets($handle)) !== false) {
+                $data[] = json_decode(trim($buffer, "\n"));
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode(array(
+                'data' => $data
+            ));
+        }
     }
 }
 
@@ -64,5 +88,8 @@ switch($_GET['action']) {
         break;
     case 'clear':
         Api::clear();
+        break;
+    case 'latest':
+        Api::getLatest();
         break;
 }

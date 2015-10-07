@@ -17,7 +17,7 @@ class RpcListener
 
     private function __construct()
     {
-        $this->json = fopen(__DIR__.'/../../../logs/rpc.json', 'a');
+        $this->json = fopen(__DIR__.'/../../../logs/rpcview_current.json', 'a');
     }
 
     public function beforeAction($event)

@@ -46,64 +46,9 @@ function getContent(timestamp, pointer) {
         url: 'api.php',
         data: queryString,
         success: function(data){
-            $('#entries li.active').stop().css('background-color','#272822').removeClass('active');
+            //$('#entries li.active').stop().css('background-color','#272822').removeClass('active');
 
-            $.each(data.data, function(index, el) {
-                var color = '';
-                var icon = '';
-                var ctrIcon = 'glyphicon glyphicon-unchecked';
-                var results = '';
-
-                if(actionIcons[el.action]) {
-                    icon = actionIcons[el.action];
-                }
-
-                if(controllerIcons[el.controller]) {
-                    ctrIcon = controllerIcons[el.controller];
-                }
-
-                switch(el.type) {
-                    case 'result':
-                        color = 'text-success';
-
-                        if(el.data.result) {
-                            results = el.data.result.length === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.result.length + '</span>';
-
-                            if(el.data.result.available) {
-                                results = el.data.result.available === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.result.available + '</span>';
-                            }
-                        }
-
-                        if(el.data.error) {
-                            color = 'text-danger';
-                            icon = 'glyphicon-alert';
-                        }
-
-                        break;
-                    case 'request':
-                        if (el.action.match(/(pull|push|delete|statistic|ack)/)) {
-                            color = 'text-primary';
-                        }
-
-                        break;
-                }
-
-                var iconStr = '<span class="'+color+'"><i class="glyphicon '+icon+'"></i></span>&nbsp;&nbsp;';
-                var ctrIconStr = '<span class="glyphicon '+ctrIcon+'"></span>&nbsp;&nbsp;';
-                var entry = $('<li class="'+el.type+'"><a href="#">'+iconStr+'<b class="text-uppercase text-muted">'+ctrIconStr+el.controller+'</b>'+' <span class="glyphicon glyphicon-menu-right text-muted"></span> <span class="text-capitalize">'+el.action+'</span><span class="label label-default pull-right">'+el.timestamp+'</span>'+results+'</a></li>').hide();
-
-                entries.unshift(el);
-
-                $('#entries').prepend(entry);
-
-                entry.slideDown().animate({
-                    'background-color': '#272822'
-                }, 3000);
-            });
-
-            entries = entries.slice(0,100);
-
-            $('#entries').find("li").slice(100).remove();
+            parseData(data);
 
             if (timer) {
                 clearTimeout(timer);
@@ -117,8 +62,67 @@ function getContent(timestamp, pointer) {
     });
 }
 
+function parseData(data) {
+    $.each(data.data, function(index, el) {
+        var color = '';
+        var icon = '';
+        var ctrIcon = 'glyphicon glyphicon-unchecked';
+        var results = '';
+
+        if(actionIcons[el.action]) {
+            icon = actionIcons[el.action];
+        }
+
+        if(controllerIcons[el.controller]) {
+            ctrIcon = controllerIcons[el.controller];
+        }
+
+        switch(el.type) {
+            case 'result':
+                color = 'text-success';
+
+                if(el.data.result) {
+                    results = el.data.result.length === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.result.length + '</span>';
+
+                    if(el.data.result.available) {
+                        results = el.data.result.available === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.result.available + '</span>';
+                    }
+                }
+
+                if(el.data.error) {
+                    color = 'text-danger';
+                    icon = 'glyphicon-alert';
+                }
+
+                break;
+            case 'request':
+                if (el.action.match(/(pull|push|delete|statistic|ack)/)) {
+                    color = 'text-primary';
+                }
+
+                break;
+        }
+
+        var iconStr = '<span class="'+color+'"><i class="glyphicon '+icon+'"></i></span>&nbsp;&nbsp;';
+        var ctrIconStr = '<span class="glyphicon '+ctrIcon+'"></span>&nbsp;&nbsp;';
+        var entry = $('<li class="'+el.type+'"><a href="#">'+iconStr+'<b class="text-uppercase text-muted">'+ctrIconStr+el.controller+'</b>'+' <span class="glyphicon glyphicon-menu-right text-muted"></span> <span class="text-capitalize">'+el.action+'</span><span class="label label-default pull-right">'+el.timestamp+'</span>'+results+'</a></li>').hide();
+
+        entries.unshift(el);
+
+        $('#entries').prepend(entry);
+
+        entry.slideDown().animate({
+            'background-color': '#272822'
+        }, 3000);
+    });
+
+    entries = entries.slice(0,100);
+
+    $('#entries').find("li").slice(100).remove();
+}
+
 function ready() {
-    if (entries.length > 0) {
+    if (entries.length > 0 && $('#entries li.active').length == 0) {
         $('#entries li:first-child a').click();
     }
 }
@@ -146,12 +150,9 @@ $(function() {
             ajax.abort();
         }
 
-        //$('#entries').empty();
-        //entries = [];
-
         getContent(0, 0);
 
-        $('#startBtn,#clearBtn').attr('disabled', 'disabled');
+        $('#startBtn,#clearBtn,#latestBtn').attr('disabled', 'disabled');
         $('#stopBtn').attr('disabled', null);
         $('#active').fadeIn();
     });
@@ -167,7 +168,7 @@ $(function() {
             data: {'action': 'clear'},
             success: function(data) {
                 $('#stopBtn').attr('disabled', 'disabled');
-                $('#startBtn,#clearBtn').attr('disabled', null);
+                $('#startBtn,#clearBtn,#latestBtn').attr('disabled', null);
                 $('#active').fadeOut();
             }
         });
@@ -183,6 +184,20 @@ $(function() {
             success: function(data) {
                 $('#entries').empty();
                 entries = [];
+            }
+        });
+    });
+
+    $('#latestBtn').click(function() {
+        ajax = $.ajax({
+            type: 'GET',
+            url: 'api.php',
+            data: {'action': 'latest'},
+            success: function(data) {
+                $('#entries').empty();
+                entries = [];
+
+                parseData(data);
             }
         });
     });
