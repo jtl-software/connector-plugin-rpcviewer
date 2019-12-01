@@ -1,6 +1,9 @@
 <?php
 namespace rpcview\listener;
 
+use Jtl\Connector\Core\Event\Rpc\RpcAfterEvent;
+use Jtl\Connector\Core\Event\Rpc\RpcBeforeEvent;
+
 class RpcListener
 {
     private static $instance = null;
@@ -20,28 +23,28 @@ class RpcListener
         $this->json = fopen(__DIR__.'/../../../logs/rpcview_current.json', 'a');
     }
 
-    public function beforeAction($event)
+    public function beforeAction(RpcBeforeEvent $event)
     {
-        $entry = array(
+        $entry = [
             'type' => 'request',
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
-            'data' => json_decode($event->getData())
-        );
+            'data' => $event->getData()
+        ];
 
         fwrite($this->json, json_encode($entry)."\n");
     }
 
-    public function afterAction($event)
+    public function afterAction(RpcAfterEvent $event)
     {
-        $entry = array(
+        $entry = [
             'type' => 'result',
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
-            'data' => json_decode($event->getData())
-        );
+            'data' => $event->getData()
+        ];
 
         fwrite($this->json, json_encode($entry)."\n");
     }
