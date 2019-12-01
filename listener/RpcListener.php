@@ -40,7 +40,7 @@ class RpcListener
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
-            'data' => $event->getData()
+            'data' => json_decode($event->getData())
         );
 
         fwrite($this->json, json_encode($entry)."\n");

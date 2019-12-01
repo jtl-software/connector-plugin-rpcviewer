@@ -1,13 +1,13 @@
 <?php
 namespace rpcview;
 
-use \jtl\Connector\Plugin\IPlugin;
-use \Symfony\Component\EventDispatcher\EventDispatcher;
-use \rpcview\listener\RpcListener;
-use \jtl\Connector\Event\Rpc\RpcAfterEvent;
-use \jtl\Connector\Event\Rpc\RpcBeforeEvent;
+use Jtl\Connector\Core\Plugin\PluginInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use rpcview\listener\RpcListener;
+use Jtl\Connector\Core\Event\Rpc\RpcAfterEvent;
+use Jtl\Connector\Core\Event\Rpc\RpcBeforeEvent;
 
-class Bootstrap implements IPlugin
+class Bootstrap implements PluginInterface
 {
     public function registerListener(EventDispatcher $dispatcher)
     {
