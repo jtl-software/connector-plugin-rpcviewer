@@ -1,8 +1,7 @@
 <?php
 namespace rpcview\listener;
 
-use Jtl\Connector\Core\Event\Rpc\RpcAfterEvent;
-use Jtl\Connector\Core\Event\Rpc\RpcBeforeEvent;
+use Jtl\Connector\Core\Event\RpcEvent;
 
 class RpcListener
 {
@@ -23,7 +22,7 @@ class RpcListener
         $this->json = fopen(__DIR__.'/../../../logs/rpcview_current.json', 'a');
     }
 
-    public function beforeAction(RpcBeforeEvent $event)
+    public function beforeAction(RpcEvent $event)
     {
         $entry = [
             'type' => 'request',
@@ -36,7 +35,7 @@ class RpcListener
         fwrite($this->json, json_encode($entry)."\n");
     }
 
-    public function afterAction(RpcAfterEvent $event)
+    public function afterAction(RpcEvent $event)
     {
         $entry = [
             'type' => 'result',

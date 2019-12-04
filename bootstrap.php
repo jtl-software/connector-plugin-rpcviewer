@@ -1,11 +1,11 @@
 <?php
 namespace rpcview;
 
+use Jtl\Connector\Core\Definition\Event;
+use Jtl\Connector\Core\Event\RpcEvent;
 use Jtl\Connector\Core\Plugin\PluginInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use rpcview\listener\RpcListener;
-use Jtl\Connector\Core\Event\Rpc\RpcAfterEvent;
-use Jtl\Connector\Core\Event\Rpc\RpcBeforeEvent;
 
 class Bootstrap implements PluginInterface
 {
@@ -13,7 +13,7 @@ class Bootstrap implements PluginInterface
     {
         $listener = RpcListener::getInstance();
 
-        $dispatcher->addListener(RpcBeforeEvent::EVENT_NAME, array($listener, 'beforeAction'));
-        $dispatcher->addListener(RpcAfterEvent::EVENT_NAME, array($listener, 'afterAction'));
+        $dispatcher->addListener(Event::createRpcEventName(Event::BEFORE), array($listener, 'beforeAction'));
+        $dispatcher->addListener(Event::createRpcEventName(Event::AFTER), array($listener, 'afterAction'));
     }
 }
