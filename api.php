@@ -1,5 +1,5 @@
 <?php
-namespace rpcview;
+namespace RpcViewer;
 
 class Api
 {

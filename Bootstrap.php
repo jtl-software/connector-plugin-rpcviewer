@@ -1,11 +1,10 @@
 <?php
-namespace rpcview;
+namespace RpcViewer;
 
 use Jtl\Connector\Core\Definition\Event;
-use Jtl\Connector\Core\Event\RpcEvent;
 use Jtl\Connector\Core\Plugin\PluginInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use rpcview\listener\RpcListener;
+use RpcViewer\Listener\RpcListener;
 
 class Bootstrap implements PluginInterface
 {

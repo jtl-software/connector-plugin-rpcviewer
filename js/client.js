@@ -36,7 +36,7 @@ var controllerIcons = {
 
 function getContent(timestamp, pointer) {
     var queryString = {
-        'timestamp' : timestamp,
+        'timestamp': timestamp,
         'pointer': pointer,
         'action': 'run'
     };
@@ -45,7 +45,7 @@ function getContent(timestamp, pointer) {
         type: 'GET',
         url: 'api.php',
         data: queryString,
-        success: function(data){
+        success: function (data) {
             //$('#entries li.active').stop().css('background-color','#272822').removeClass('active');
 
             parseData(data);
@@ -63,33 +63,33 @@ function getContent(timestamp, pointer) {
 }
 
 function parseData(data) {
-    $.each(data.data, function(index, el) {
+    $.each(data.data, function (index, el) {
         var color = '';
         var icon = '';
         var ctrIcon = 'glyphicon glyphicon-unchecked';
         var results = '';
 
-        if(actionIcons[el.action]) {
+        if (actionIcons[el.action]) {
             icon = actionIcons[el.action];
         }
 
-        if(controllerIcons[el.controller]) {
+        if (controllerIcons[el.controller]) {
             ctrIcon = controllerIcons[el.controller];
         }
 
-        switch(el.type) {
+        switch (el.type) {
             case 'result':
                 color = 'text-success';
 
-                if(el.data.result) {
-                    results = el.data.result.length === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.result.length + '</span>';
+                if (el.data) {
+                    results = el.data.length === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.length + '</span>';
 
-                    if(el.data.result.available) {
-                        results = el.data.result.available === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.result.available + '</span>';
+                    if (el.data.available) {
+                        results = el.data.available === undefined ? '' : '<span class="badge bg-info pull-right">' + el.data.available + '</span>';
                     }
                 }
 
-                if(el.data.error) {
+                if (el.data.error) {
                     color = 'text-danger';
                     icon = 'glyphicon-alert';
                 }
@@ -103,9 +103,9 @@ function parseData(data) {
                 break;
         }
 
-        var iconStr = '<span class="'+color+'"><i class="glyphicon '+icon+'"></i></span>&nbsp;&nbsp;';
-        var ctrIconStr = '<span class="glyphicon '+ctrIcon+'"></span>&nbsp;&nbsp;';
-        var entry = $('<li class="'+el.type+'"><a href="#">'+iconStr+'<b class="text-uppercase text-muted">'+ctrIconStr+el.controller+'</b>'+' <span class="glyphicon glyphicon-menu-right text-muted"></span> <span class="text-capitalize">'+el.action+'</span><span class="label label-default pull-right">'+el.timestamp+'</span>'+results+'</a></li>').hide();
+        var iconStr = '<span class="' + color + '"><i class="glyphicon ' + icon + '"></i></span>&nbsp;&nbsp;';
+        var ctrIconStr = '<span class="glyphicon ' + ctrIcon + '"></span>&nbsp;&nbsp;';
+        var entry = $('<li class="' + el.type + '"><a href="#">' + iconStr + '<b class="text-uppercase text-muted">' + ctrIconStr + el.controller + '</b>' + ' <span class="glyphicon glyphicon-menu-right text-muted"></span> <span class="text-capitalize">' + el.action + '</span><span class="label label-default pull-right">' + el.timestamp + '</span>' + results + '</a></li>').hide();
 
         entries.unshift(el);
 
@@ -116,7 +116,7 @@ function parseData(data) {
         }, 3000);
     });
 
-    entries = entries.slice(0,100);
+    entries = entries.slice(0, 100);
 
     $('#entries').find("li").slice(100).remove();
 }
@@ -127,7 +127,7 @@ function ready() {
     }
 }
 
-$(function() {
+$(function () {
     editor = ace.edit("view");
     editor.getSession().setMode("ace/mode/json");
     editor.setTheme("ace/theme/monokai");
@@ -135,18 +135,18 @@ $(function() {
     editor.setShowPrintMargin(false);
     editor.$blockScrolling = Infinity;
 
-    $('#entries').on('click', 'a', function(e) {
-        $('#entries li.active').stop().css('background-color','#272822').removeClass('active');
+    $('#entries').on('click', 'a', function (e) {
+        $('#entries li.active').stop().css('background-color', '#272822').removeClass('active');
 
         editor.setValue(JSON.stringify(entries[$(this).parent().index()].data, null, '\t'), -1);
 
         $(this).parent().stop().animate({
-           'background-color': '#111111'
+            'background-color': '#111111'
         }, 500).addClass('active');
     });
 
-    $('#startBtn').click(function() {
-        if(ajax) {
+    $('#startBtn').click(function () {
+        if (ajax) {
             ajax.abort();
         }
 
@@ -157,8 +157,8 @@ $(function() {
         $('#active').fadeIn();
     });
 
-    $('#stopBtn').click(function() {
-        if(ajax) {
+    $('#stopBtn').click(function () {
+        if (ajax) {
             ajax.abort();
         }
 
@@ -166,7 +166,7 @@ $(function() {
             type: 'GET',
             url: 'api.php',
             data: {'action': 'clear'},
-            success: function(data) {
+            success: function (data) {
                 $('#stopBtn').attr('disabled', 'disabled');
                 $('#startBtn,#clearBtn,#latestBtn').attr('disabled', null);
                 $('#active').fadeOut();
@@ -174,26 +174,26 @@ $(function() {
         });
     });
 
-    $('#clearBtn').click(function() {
+    $('#clearBtn').click(function () {
         editor.setValue('');
 
         ajax = $.ajax({
             type: 'GET',
             url: 'api.php',
             data: {'action': 'clear'},
-            success: function(data) {
+            success: function (data) {
                 $('#entries').empty();
                 entries = [];
             }
         });
     });
 
-    $('#latestBtn').click(function() {
+    $('#latestBtn').click(function () {
         ajax = $.ajax({
             type: 'GET',
             url: 'api.php',
             data: {'action': 'latest'},
-            success: function(data) {
+            success: function (data) {
                 $('#entries').empty();
                 entries = [];
 

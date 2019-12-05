@@ -1,5 +1,5 @@
 <?php
-namespace rpcview\listener;
+namespace RpcViewer\Listener;
 
 use Jtl\Connector\Core\Event\RpcEvent;
 
@@ -24,12 +24,14 @@ class RpcListener
 
     public function beforeAction(RpcEvent $event)
     {
+        $data = $event->getData()['params'] ?? [];
+
         $entry = [
             'type' => 'request',
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
-            'data' => $event->getData()
+            'data' => $data
         ];
 
         fwrite($this->json, json_encode($entry)."\n");
@@ -37,12 +39,14 @@ class RpcListener
 
     public function afterAction(RpcEvent $event)
     {
+        $data = $event->getData()['result'] ?? [];
+
         $entry = [
             'type' => 'result',
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
-            'data' => $event->getData()
+            'data' => $data
         ];
 
         fwrite($this->json, json_encode($entry)."\n");
