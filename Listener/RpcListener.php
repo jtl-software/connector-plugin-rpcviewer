@@ -1,25 +1,32 @@
 <?php
-namespace RpcViewer\Listener;
 
+namespace RpcViewer\Listener;
 use Jtl\Connector\Core\Event\RpcEvent;
 
 class RpcListener
 {
-    private static $instance = null;
-    private $json;
+    /**
+     * @var false|resource
+     */
+    protected $json;
 
-    public static function getInstance()
+    /**
+     * @var string
+     */
+    protected $logDir;
+
+    /**
+     * RpcListener constructor.
+     * @param string $logDir
+     * @throws \Exception
+     */
+    public function __construct(string $logDir)
     {
-        if (null === self::$instance) {
-            self::$instance = new self;
+        $fileName = sprintf('%s/rpcview_current.json', $logDir);
+        $this->json = fopen($fileName, 'a');
+        if (!is_resource($this->json)) {
+            throw new \Exception(sprintf('Could not open file %s', $fileName));
         }
-
-        return self::$instance;
-    }
-
-    private function __construct()
-    {
-        $this->json = fopen(__DIR__.'/../../../logs/rpcview_current.json', 'a');
     }
 
     public function beforeAction(RpcEvent $event)
@@ -34,14 +41,14 @@ class RpcListener
             'data' => $data
         ];
 
-        fwrite($this->json, json_encode($entry)."\n");
+        fwrite($this->json, json_encode($entry) . "\n");
     }
 
     public function afterAction(RpcEvent $event)
     {
         $data = $event->getData();
         $showData = $event->getData()['result'] ?? [];
-        if(isset($data['error']) && !is_null($data['error'])) {
+        if (isset($data['error']) && !is_null($data['error'])) {
             $showData = $data;
         }
 
@@ -53,6 +60,6 @@ class RpcListener
             'data' => $showData
         ];
 
-        fwrite($this->json, json_encode($entry)."\n");
+        fwrite($this->json, json_encode($entry) . "\n");
     }
 }

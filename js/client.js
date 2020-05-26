@@ -35,28 +35,18 @@ var controllerIcons = {
 };
 
 function getContent(timestamp, pointer) {
-    var queryString = {
-        'timestamp': timestamp,
-        'pointer': pointer,
-        'action': 'run'
-    };
-
     ajax = $.ajax({
         type: 'GET',
         url: 'api.php',
-        data: queryString,
+        data: buildQueryStringData('run', {'timestamp': timestamp, 'pointer': pointer}),
         success: function (data) {
-            //$('#entries li.active').stop().css('background-color','#272822').removeClass('active');
-
             parseData(data);
-
             if (timer) {
                 clearTimeout(timer);
                 timer = null;
             }
 
             timer = setTimeout(ready, 2500);
-
             getContent(data.timestamp, data.pointer);
         }
     });
@@ -117,7 +107,6 @@ function parseData(data) {
     });
 
     entries = entries.slice(0, 100);
-
     $('#entries').find("li").slice(100).remove();
 }
 
@@ -127,7 +116,7 @@ function ready() {
     }
 }
 
-$(function () {
+$(document).ready(function () {
     editor = ace.edit("view");
     editor.getSession().setMode("ace/mode/json");
     editor.setTheme("ace/theme/monokai");
@@ -165,7 +154,7 @@ $(function () {
         ajax = $.ajax({
             type: 'GET',
             url: 'api.php',
-            data: {'action': 'clear'},
+            data: buildQueryStringData('clear'),
             success: function (data) {
                 $('#stopBtn').attr('disabled', 'disabled');
                 $('#startBtn,#clearBtn,#latestBtn').attr('disabled', null);
@@ -176,11 +165,10 @@ $(function () {
 
     $('#clearBtn').click(function () {
         editor.setValue('');
-
         ajax = $.ajax({
             type: 'GET',
             url: 'api.php',
-            data: {'action': 'clear'},
+            data: buildQueryStringData('clear', {'cmd': 'api'}),
             success: function (data) {
                 $('#entries').empty();
                 entries = [];
@@ -192,7 +180,7 @@ $(function () {
         ajax = $.ajax({
             type: 'GET',
             url: 'api.php',
-            data: {'action': 'latest'},
+            data: buildQueryStringData('latest'),
             success: function (data) {
                 $('#entries').empty();
                 entries = [];
@@ -204,3 +192,15 @@ $(function () {
 
     $('#stopBtn').click();
 });
+
+function buildQueryStringData(action, params) {
+    var data = {'action': action};
+
+    if (typeof params === 'object') {
+        for (var i in params) {
+            data[i] = params[i];
+        }
+    }
+
+    return data;
+}
