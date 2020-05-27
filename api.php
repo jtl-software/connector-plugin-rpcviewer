@@ -10,7 +10,7 @@ if(is_file($configFile)) {
     }
 }
 
-require_once __DIR__ . '/Viewer.php';
+require_once __DIR__ . '/ApiViewer.php';
 
 $viewer = new ApiViewer($logDir);
 

@@ -87,6 +87,8 @@ class ApiViewer
         }
 
         unlink($this->current);
+        header('Content-Type: application/json');
+        echo json_encode([]);
     }
 
     public function getLatest()
