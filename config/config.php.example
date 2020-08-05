@@ -1,4 +1,4 @@
 <?php
 return [
-    'logDir' => sprintf('%s/var/log', dirname(dirname(dirname(dirname(__DIR__)))))
+    'logDir' => sprintf('%s/var/log', dirname(dirname(dirname(__DIR__))))
 ];
