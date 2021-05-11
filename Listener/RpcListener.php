@@ -31,14 +31,12 @@ class RpcListener
 
     public function beforeAction(RpcEvent $event)
     {
-        $data = $event->getData()['params'] ?? [];
-
         $entry = [
             'type' => 'request',
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
-            'data' => $data
+            'data' => $event->getData()
         ];
 
         fwrite($this->json, json_encode($entry) . "\n");
@@ -46,18 +44,12 @@ class RpcListener
 
     public function afterAction(RpcEvent $event)
     {
-        $data = $event->getData();
-        $showData = $event->getData()['result'] ?? [];
-        if (isset($data['error']) && !is_null($data['error'])) {
-            $showData = $data;
-        }
-
         $entry = [
             'type' => 'result',
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
-            'data' => $showData
+            'data' => $event->getData()
         ];
 
         fwrite($this->json, json_encode($entry) . "\n");
