@@ -8,7 +8,7 @@ class RpcListener
     /**
      * @var false|resource
      */
-    protected $json;
+    protected $fileHandle;
 
     /**
      * @var string
@@ -23,35 +23,42 @@ class RpcListener
     public function __construct(string $logDir)
     {
         $fileName = sprintf('%s/rpcview_current.json', $logDir);
-        $this->json = fopen($fileName, 'a');
-        if (!is_resource($this->json)) {
+        $this->fileHandle = fopen($fileName, 'a');
+        if (!is_resource($this->fileHandle)) {
             throw new \Exception(sprintf('Could not open file %s', $fileName));
         }
     }
 
-    public function beforeAction(RpcEvent $event)
+    /**
+     * @param RpcEvent $event
+     */
+    public function beforeAction(RpcEvent $event): void
     {
-        $entry = [
-            'type' => 'request',
-            'controller' => $event->getController(),
-            'action' => $event->getAction(),
-            'timestamp' => date('H:i:s', time()),
-            'data' => $event->getData()
-        ];
-
-        fwrite($this->json, json_encode($entry) . "\n");
+        $this->writeEntry($event, 'request');
     }
 
-    public function afterAction(RpcEvent $event)
+    /**
+     * @param RpcEvent $event
+     */
+    public function afterAction(RpcEvent $event): void
+    {
+        $this->writeEntry($event, 'result');
+    }
+
+    /**
+     * @param RpcEvent $event
+     * @param string $type
+     */
+    protected function writeEntry(RpcEvent $event, string $type): void
     {
         $entry = [
-            'type' => 'result',
+            'type' => $type,
             'controller' => $event->getController(),
             'action' => $event->getAction(),
             'timestamp' => date('H:i:s', time()),
             'data' => $event->getData()
         ];
 
-        fwrite($this->json, json_encode($entry) . "\n");
+        fwrite($this->fileHandle, json_encode($entry) . "\n");
     }
 }

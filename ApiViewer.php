@@ -32,7 +32,7 @@ class ApiViewer
         $this->latest = sprintf('%s/rpcview_latest.json', $logDir);
     }
 
-    public function run()
+    public function run(): void
     {
         set_time_limit(0);
 
@@ -40,7 +40,7 @@ class ApiViewer
 
         $handle = @fopen($this->current, "r");
 
-        while (file_exists($this->current)) {
+        while (file_exists($this->current) && $handle !== false) {
             $last_ajax_call = isset($_GET['timestamp']) ? (int)$_GET['timestamp'] : null;
 
             clearstatcache();
@@ -75,11 +75,10 @@ class ApiViewer
                 sleep(1);
                 continue;
             }
-
         }
     }
 
-    public function clear()
+    public function clear(): void
     {
         if (file_exists($this->current)) {
             unlink($this->latest);
@@ -91,7 +90,7 @@ class ApiViewer
         echo json_encode([]);
     }
 
-    public function getLatest()
+    public function getLatest(): void
     {
         if (file_exists($this->latest)) {
             $handle = @fopen($this->latest, "r");
